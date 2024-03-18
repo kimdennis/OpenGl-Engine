@@ -16,6 +16,8 @@ OVertexArrayObject::OVertexArrayObject(const OVertexBufferData& data)
 
 
 	glBindVertexArray(0);
+
+	m_vertexBufferData = data;
 }
 
 OVertexArrayObject::~OVertexArrayObject()
@@ -27,4 +29,14 @@ OVertexArrayObject::~OVertexArrayObject()
 ui32 OVertexArrayObject::getId()
 {
 	return m_vertexArrayObjectId;
+}
+
+ui32 OVertexArrayObject::getVertexBufferSize()
+{
+	return m_vertexBufferData.listSize;
+}
+
+ui32 OVertexArrayObject::getVertexSize()
+{
+	return m_vertexBufferData.vertexSize;
 }
