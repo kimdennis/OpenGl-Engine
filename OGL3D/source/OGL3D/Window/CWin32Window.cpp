@@ -40,7 +40,7 @@ OWindow::OWindow()
 	RECT rc = { 0,0,1024,768 };
 	AdjustWindowRect(&rc, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU, false);
 
-	m_handle = CreateWindowEx(NULL, L"OGL3DWindow", L"PardCode | OpenGL 3D Game", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, NULL, NULL);
+	m_handle = CreateWindowEx(NULL, L"OGL3DWindow", L"Dennis Kim | OpenGL 3D Game", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, NULL, NULL);
 
 	assert(m_handle);
 
@@ -91,6 +91,13 @@ OWindow::~OWindow()
 	wglDeleteContext(HGLRC(m_context));
 	DestroyWindow((HWND)m_handle);
 
+}
+
+ORect OWindow::getInnerSize()
+{
+	RECT rc = {};
+	GetClientRect((HWND)m_handle, &rc);
+	return ORect(rc.right - rc.left, rc.bottom - rc.top);
 }
 
 void OWindow::makeCurrentContact()
