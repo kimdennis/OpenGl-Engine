@@ -14,6 +14,7 @@ public:
 	virtual void onQuit();
 
 
+
 	void run();
 	void quit();
 protected:
@@ -24,4 +25,5 @@ protected:
 
 
 	OVertexArrayObjectPtr m_triangleVAO;
+	OShaderProgramPtr m_shader;
 };
