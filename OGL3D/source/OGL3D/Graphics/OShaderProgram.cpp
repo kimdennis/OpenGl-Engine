@@ -42,6 +42,7 @@ void OShaderProgram::attach(const wchar_t* shaderFilePath, const OShaderType& ty
 	}
 	else
 	{
+		OGL3D_WARNING("OShaderProgram | " << shaderFilePath << "not found");
 		return;
 	}
 
@@ -55,12 +56,37 @@ void OShaderProgram::attach(const wchar_t* shaderFilePath, const OShaderType& ty
 	glShaderSource(shaderId, 1, &sourcePointer, NULL);
 	glCompileShader(shaderId);
 
+	//get compile errors
+	i32 logLength = 0;
+	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
+	if (logLength > 0)
+	{
+		std::vector<char> errorMessage(logLength + 1);
+		glGetShaderInfoLog(shaderId, logLength, NULL, &errorMessage[0]);
+		OGL3D_WARNING("OShaderProgram | " << shaderFilePath << " compiled with errors:" << std::endl << &errorMessage[0]);
+		return;
+	}
+
 	glAttachShader(m_programId, shaderId);
 	m_attachedShaders[type] = shaderId;
+
+	OGL3D_INFO("OShaderProgram | " << shaderFilePath << " compiled successfully");
 }
 
 void OShaderProgram::link()
 {
 	glLinkProgram(m_programId);
+
+	//get compile errors
+	i32 logLength = 0;
+	glGetShaderiv(m_programId, GL_INFO_LOG_LENGTH, &logLength);
+	if (logLength > 0)
+	{
+		std::vector<char> errorMessage(logLength + 1);
+		glGetShaderInfoLog(m_programId, logLength, NULL, &errorMessage[0]);
+		OGL3D_WARNING("OShaderProgram | " << &errorMessage[0]);
+		return;
+	}
+
 }
 
