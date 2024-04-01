@@ -10,7 +10,15 @@
 struct UniformData
 {
 	OMat4 world;
+	OMat4 projection;
 };
+
+struct Vertex
+{
+	OVec3 position;
+	OVec2 texcoord;
+}; 
+
 
 OGame::OGame()
 {
@@ -43,6 +51,55 @@ void OGame::onCreate()
 		OVec3(-0.5f, -0.5f, 0.5f)
 	};
 
+	OVec2 texcoordsList[] =
+	{
+		OVec2(0,0),
+		OVec2(0,1),
+		OVec2(1,0),
+		OVec2(1,1)
+	};
+
+	Vertex verticesList[] =
+	{
+		//front face
+		{ positionList[0],texcoordsList[1] },
+		{ positionList[1],texcoordsList[0] },
+		{ positionList[2],texcoordsList[2] },
+		{ positionList[3],texcoordsList[3] },
+
+		//back face
+		{ positionList[4],texcoordsList[1] },
+		{ positionList[5],texcoordsList[0] },
+		{ positionList[6],texcoordsList[2] },
+		{ positionList[7],texcoordsList[3] },
+
+		//top face
+		{ positionList[1],texcoordsList[1] },
+		{ positionList[6],texcoordsList[0] },
+		{ positionList[5],texcoordsList[2] },
+		{ positionList[2],texcoordsList[3] },
+
+		//bottom face
+		{ positionList[7],texcoordsList[1] },
+		{ positionList[0],texcoordsList[0] },
+		{ positionList[3],texcoordsList[2] },
+		{ positionList[4],texcoordsList[3] },
+
+		//right face
+		{ positionList[3],texcoordsList[1] },
+		{ positionList[2],texcoordsList[0] },
+		{ positionList[5],texcoordsList[2] },
+		{ positionList[4],texcoordsList[3] },
+
+		//left face
+		{ positionList[7],texcoordsList[1] },
+		{ positionList[6],texcoordsList[0] },
+		{ positionList[1],texcoordsList[2] },
+		{ positionList[0],texcoordsList[3] }
+	};
+
+
+
 	ui32 indicesList[] =
 	{
 		//front
@@ -54,48 +111,33 @@ void OGame::onCreate()
 		6, 7, 4,
 
 		//top
-		1, 6, 5,
-		5, 2, 1,
+		8, 9, 10,
+		10, 11, 8,
 
 		//bottom
-		7, 0, 3,
-		3, 4, 7,
+		12, 13, 14,
+		14, 15, 12,
 
 		//right
-		3, 2 ,5,
-		5, 4, 3,
+		16, 17 , 18,
+		18, 19, 16,
 
 		//left
-		7, 6, 1,
-		1, 0, 7
+		20, 21, 22,
+		22, 23, 20
 
 	};
 
-	//const f32 polygonVertices[] = {
-	//	-0.5f,-0.5f,0.0f,
-	//	1    ,0    ,0   ,
-
-	//	-0.5f, 0.5f,0.0f,
-	//	0    ,1    ,0   ,
-
-	//	0.5f, -0.5f,0.0f,
-	//	0   ,0    ,1  ,
-
-	//	0.5f, 0.5f,0.0f,
-	//	1   ,1   ,0
-	//};
-
-
 	OVertexAttribute attribsList[] = {
-		sizeof(OVec3)/sizeof(f32) //position
-		//3 //colour
+		sizeof(OVec3)/sizeof(f32), //position
+		sizeof(OVec2)/sizeof(f32) //texcoord
 	};
 
 	m_polygonVAO = m_graphicsEngine->createVertexArrayObject(
 		{
-			(void*)positionList,
-			sizeof(OVec3),
-			sizeof(positionList)/sizeof(OVec3),
+			(void*)verticesList,
+			sizeof(Vertex),
+			sizeof(verticesList)/sizeof(Vertex),
 
 			attribsList,
 			sizeof(attribsList) / sizeof(OVertexAttribute)
@@ -142,10 +184,10 @@ void OGame::onUpdate()
 
 
 
-	OMat4 world, temp;
+	OMat4 world, temp, projection;
 
 	temp.setIdentity();
-	world.setScale(OVec4(1, 1, 1, 1));
+	world.setScale(OVec3(1, 1, 1));
 	world *= temp;
 
 	temp.setIdentity();
@@ -161,10 +203,16 @@ void OGame::onUpdate()
 	world *= temp;
 
 	temp.setIdentity();
-	temp.setTranslation(OVec4(0, 0, 0, 1));
+	temp.setTranslation(OVec3(0, 0, 0));
 	world *= temp;
 
-	UniformData data = { world };
+	auto displaySize = m_display->getInnerSize();
+	projection.setOrthoLH(displaySize.width*0.004f, displaySize.height * 0.004f, 0.01f, 100.0f );
+
+
+
+
+	UniformData data = { world, projection};
 	m_uniform->setData(&data);
 
 
