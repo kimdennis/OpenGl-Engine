@@ -4,6 +4,8 @@
 #include <OGL3D/Graphics/OShaderProgram.h>
 #include <OGL3D/Graphics/OUniformBuffer.h>
 #include <OGL3D/Math/OMat4.h>
+#include <OGL3D/Math/OVec3.h>
+#include <OGL3D/Math/OVec2.h>
 
 struct UniformData
 {
@@ -26,59 +28,84 @@ OGame::~OGame()
 
 void OGame::onCreate()
 {
-	
-	/*
-	const f32 triangleVertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		1	 ,0	    ,0	  ,
+	OVec3 positionList[] =
+	{
+		//front face
+		OVec3(-0.5f, -0.5f, -0.5f),
+		OVec3(-0.5f, 0.5f, -0.5f),
+		OVec3(0.5f, 0.5f, -0.5f),
+		OVec3(0.5f, -0.5f, -0.5f),
 
-		0.5f, -0.5f, 0.0f,
-		0	,1	    ,0	 ,
-
-		0.0f, 0.5f, 0.0f,
-		0	,0	  ,1
+		//back face
+		OVec3(0.5f, -0.5f, 0.5f),
+		OVec3(0.5f, 0.5f, 0.5f),
+		OVec3(-0.5f, 0.5f, 0.5f),
+		OVec3(-0.5f, -0.5f, 0.5f)
 	};
-	*/
 
-	const f32 polygonVertices[] = {
-		-0.5f,-0.5f,0.0f,
-		1    ,0    ,0   ,
+	ui32 indicesList[] =
+	{
+		//front
+		0, 1, 2,
+		2, 3, 0,
 
-		-0.5f, 0.5f,0.0f,
-		0    ,1    ,0   ,
+		//back
+		4, 5, 6,
+		6, 7, 4,
 
-		0.5f, -0.5f,0.0f,
-		0   ,0    ,1  ,
+		//top
+		1, 6, 5,
+		5, 2, 1,
 
-		0.5f, 0.5f,0.0f,
-		1   ,1   ,0
+		//bottom
+		7, 0, 3,
+		3, 4, 7,
+
+		//right
+		3, 2 ,5,
+		5, 4, 3,
+
+		//left
+		7, 6, 1,
+		1, 0, 7
+
 	};
+
+	//const f32 polygonVertices[] = {
+	//	-0.5f,-0.5f,0.0f,
+	//	1    ,0    ,0   ,
+
+	//	-0.5f, 0.5f,0.0f,
+	//	0    ,1    ,0   ,
+
+	//	0.5f, -0.5f,0.0f,
+	//	0   ,0    ,1  ,
+
+	//	0.5f, 0.5f,0.0f,
+	//	1   ,1   ,0
+	//};
 
 
 	OVertexAttribute attribsList[] = {
-		3, //position
-		3  // color
+		sizeof(OVec3)/sizeof(f32) //position
+		//3 //colour
 	};
 
-	/*
-	m_triangleVAO = m_graphicsEngine->createVertexArrayObject({
-		(void*)triangleVertices,
-		sizeof(f32)*(3+3),
-		3,
+	m_polygonVAO = m_graphicsEngine->createVertexArrayObject(
+		{
+			(void*)positionList,
+			sizeof(OVec3),
+			sizeof(positionList)/sizeof(OVec3),
 
-		attribsList,
-		2
-		});
-	*/
+			attribsList,
+			sizeof(attribsList) / sizeof(OVertexAttribute)
+		},
 
-	m_polygonVAO = m_graphicsEngine->createVertexArrayObject({
-		(void*)polygonVertices,
-		sizeof(f32) * (3 + 3),
-		4,
-
-		attribsList,
-		2
-		});
+		{
+			(void*) indicesList, 
+			sizeof(indicesList)
+		}
+	);
 
 
 	m_uniform = m_graphicsEngine->createUniformBuffer({
@@ -122,7 +149,7 @@ void OGame::onUpdate()
 	world *= temp;
 
 	temp.setIdentity();
-	temp.setRotationX(m_scale);
+	temp.setRotationZ(m_scale);
 	world *= temp;
 
 	temp.setIdentity();
@@ -130,7 +157,7 @@ void OGame::onUpdate()
 	world *= temp;
 
 	temp.setIdentity();
-	temp.setRotationZ(m_scale);
+	temp.setRotationX(m_scale);
 	world *= temp;
 
 	temp.setIdentity();
@@ -146,7 +173,7 @@ void OGame::onUpdate()
 	m_graphicsEngine->setVertexArrayObject(m_polygonVAO);
 	m_graphicsEngine->setUniformBuffer(m_uniform, 0);
 	m_graphicsEngine->setShaderProgram(m_shader); 
-	m_graphicsEngine->drawTriangles(TriangleStrip, m_polygonVAO->getVertexBufferSize(), 0);
+	m_graphicsEngine->drawIndexedTriangles(TriangleStrip, 36);
 
 	m_display->present(false);
 }

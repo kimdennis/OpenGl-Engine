@@ -34,6 +34,12 @@ struct OVertexBufferDesc
 	ui32 attributesListSize = 0;
 };
 
+struct OIndexBufferDesc
+{
+	void* indicesList = nullptr;
+	ui32 listSize = 0;
+};
+
 struct OShaderProgramDesc
 {
 	const wchar_t* vertexShaderFilePath;

@@ -9,7 +9,8 @@ public:
 	OGraphicsEngine();
 	~OGraphicsEngine();
 public:
-	OVertexArrayObjectPtr createVertexArrayObject(const OVertexBufferDesc& data);
+	OVertexArrayObjectPtr createVertexArrayObject(const OVertexBufferDesc& vbDesc);
+	OVertexArrayObjectPtr createVertexArrayObject(const OVertexBufferDesc& vbDesc, const OIndexBufferDesc& ibDesc);
 	OUniformBufferPtr createUniformBuffer(const OUniformBufferDesc& desc);
 	OShaderProgramPtr createShaderProgram(const OShaderProgramDesc& desc);
 public:
@@ -18,7 +19,7 @@ public:
 	void setVertexArrayObject(const OVertexArrayObjectPtr& vao);
 	void setUniformBuffer(const OUniformBufferPtr& buffer, ui32 slot);
 	void setShaderProgram(const OShaderProgramPtr& program);
-
 	void drawTriangles(const OTriangleType& triangleType, ui32 vertexCount, ui32 offset);
+	void drawIndexedTriangles(const OTriangleType& triangleType, ui32 indicesCount);
 };
 

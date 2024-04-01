@@ -5,6 +5,7 @@ class OVertexArrayObject
 {
 public:
 	OVertexArrayObject(const OVertexBufferDesc& data);
+	OVertexArrayObject(const OVertexBufferDesc& vbDesc, const OIndexBufferDesc& ibDesc);
 	~OVertexArrayObject();
 
 	ui32 getId();
@@ -14,6 +15,7 @@ public:
 
 private:
 	ui32 m_vertexBufferId = 0;
+	ui32 m_elementBufferId = 0;
 	ui32 m_vertexArrayObjectId = 0;
 	OVertexBufferDesc m_vertexBufferData;
 };

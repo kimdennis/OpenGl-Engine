@@ -4,10 +4,15 @@
 #include <OGL3D/Graphics/OShaderProgram.h>
 #include <glad/glad.h>
 
-OVertexArrayObjectPtr OGraphicsEngine::createVertexArrayObject(const OVertexBufferDesc& data)
+OVertexArrayObjectPtr OGraphicsEngine::createVertexArrayObject(const OVertexBufferDesc& vbDesc)
 {
-	return std::make_shared<OVertexArrayObject>(data);
+	return std::make_shared<OVertexArrayObject>(vbDesc);
 		
+}
+
+OVertexArrayObjectPtr OGraphicsEngine::createVertexArrayObject(const OVertexBufferDesc& vbDesc, const OIndexBufferDesc& ibDesc)
+{
+	return std::make_shared<OVertexArrayObject>(vbDesc, ibDesc);
 }
 
 OUniformBufferPtr OGraphicsEngine::createUniformBuffer(const OUniformBufferDesc& desc)
@@ -58,5 +63,17 @@ void OGraphicsEngine::drawTriangles(const OTriangleType& triangleType, ui32 vert
 	}
 
 	glDrawArrays(glTriType, offset, vertexCount);
+}
+
+void OGraphicsEngine::drawIndexedTriangles(const OTriangleType& triangleType, ui32 indicesCount)
+{
+	auto glTriType = GL_TRIANGLES;
+
+	switch (triangleType)
+	{
+	case TriangleList: { glTriType = GL_TRIANGLES; break; }
+	case TriangleStrip: { glTriType = GL_TRIANGLE_STRIP; break; }
+	}
+	glDrawElements(glTriType, indicesCount, GL_UNSIGNED_INT, nullptr);
 }
 
