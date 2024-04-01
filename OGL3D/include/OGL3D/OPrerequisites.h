@@ -57,6 +57,20 @@ enum OTriangleType
 	TriangleStrip
 };
 
+enum OCullType
+{
+	BackFace = 0,
+	FrontFace,
+	Both
+};
+
+enum OWindingOrder
+{
+	Clockwise = 0,
+	CounterClockwise
+};
+
+
 
 enum OShaderType
 {

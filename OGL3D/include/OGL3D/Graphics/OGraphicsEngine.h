@@ -15,6 +15,8 @@ public:
 	OShaderProgramPtr createShaderProgram(const OShaderProgramDesc& desc);
 public:
 	void clear(const OVec4& color);
+	void setFaceCulling(const OCullType& type);
+	void setWindingOrder(const OWindingOrder& order);
 	void setViewport(const ORect& size);
 	void setVertexArrayObject(const OVertexArrayObjectPtr& vao);
 	void setUniformBuffer(const OUniformBufferPtr& buffer, ui32 slot);

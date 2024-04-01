@@ -53,10 +53,10 @@ void OGame::onCreate()
 
 	OVec2 texcoordsList[] =
 	{
-		OVec2(0,0),
-		OVec2(0,1),
-		OVec2(1,0),
-		OVec2(1,1)
+		OVec2(0,0), //black
+		OVec2(0,1), //green
+		OVec2(1,0), //red
+		OVec2(1,1) //yellow
 	};
 
 	Vertex verticesList[] =
@@ -218,10 +218,13 @@ void OGame::onUpdate()
 
 	m_graphicsEngine->clear(OVec4(0, 0, 0, 1));
 
+	m_graphicsEngine->setFaceCulling(OCullType::BackFace);
+	m_graphicsEngine->setWindingOrder(OWindingOrder::Clockwise);
 	m_graphicsEngine->setVertexArrayObject(m_polygonVAO);
 	m_graphicsEngine->setUniformBuffer(m_uniform, 0);
 	m_graphicsEngine->setShaderProgram(m_shader); 
-	m_graphicsEngine->drawIndexedTriangles(TriangleStrip, 36);
+	m_graphicsEngine->drawIndexedTriangles(OTriangleType::TriangleList, 36);
+
 
 	m_display->present(false);
 }

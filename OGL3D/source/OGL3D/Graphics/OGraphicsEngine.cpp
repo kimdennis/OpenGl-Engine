@@ -31,6 +31,29 @@ void OGraphicsEngine::clear(const OVec4& color)
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
+void OGraphicsEngine::setFaceCulling(const OCullType& type)
+{
+	auto cullType = GL_BACK;
+
+	if (type == OCullType::FrontFace) cullType = GL_FRONT;
+	else if (type == OCullType::BackFace) cullType = GL_BACK;
+	else if (type == OCullType::Both) cullType = GL_FRONT_AND_BACK;
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(cullType);
+}
+
+void OGraphicsEngine::setWindingOrder(const OWindingOrder& order)
+{
+	auto orderType = GL_CW;
+
+	if (order == OWindingOrder::Clockwise) orderType = GL_CW;
+	else if (order == OWindingOrder::CounterClockwise) orderType = GL_CCW;
+
+	glFrontFace(orderType);
+
+}
+
 void OGraphicsEngine::setViewport(const ORect& size)
 {
 	glViewport(size.left, size.top, size.width, size.height);
@@ -58,8 +81,8 @@ void OGraphicsEngine::drawTriangles(const OTriangleType& triangleType, ui32 vert
 
 	switch (triangleType)
 	{
-		case TriangleList: { glTriType = GL_TRIANGLES; break; }
-		case TriangleStrip: { glTriType = GL_TRIANGLE_STRIP; break; }
+	case OTriangleType::TriangleList: { glTriType = GL_TRIANGLES; break; }
+	case OTriangleType::TriangleStrip: { glTriType = GL_TRIANGLE_STRIP; break; }
 	}
 
 	glDrawArrays(glTriType, offset, vertexCount);
@@ -71,8 +94,8 @@ void OGraphicsEngine::drawIndexedTriangles(const OTriangleType& triangleType, ui
 
 	switch (triangleType)
 	{
-	case TriangleList: { glTriType = GL_TRIANGLES; break; }
-	case TriangleStrip: { glTriType = GL_TRIANGLE_STRIP; break; }
+	case OTriangleType::TriangleList: { glTriType = GL_TRIANGLES; break; }
+	case OTriangleType::TriangleStrip: { glTriType = GL_TRIANGLE_STRIP; break; }
 	}
 	glDrawElements(glTriType, indicesCount, GL_UNSIGNED_INT, nullptr);
 }
