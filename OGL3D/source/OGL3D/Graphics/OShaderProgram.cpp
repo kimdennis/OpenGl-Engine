@@ -16,7 +16,7 @@ OShaderProgram::OShaderProgram(const OShaderProgramDesc& desc)
 
 OShaderProgram::~OShaderProgram()
 {
-	for (ui32 i = 0; i < 2 ;i++)
+	for (ui32 i = 0; i < 2; i++)
 	{
 		glDetachShader(m_programId, m_attachedShaders[i]);
 		glDeleteShader(m_attachedShaders[i]);
@@ -38,7 +38,10 @@ void OShaderProgram::setUniformBufferSlot(const char* name, ui32 slot)
 void OShaderProgram::attach(const wchar_t* shaderFilePath, const OShaderType& type)
 {
 	std::string shaderCode;
-	std::ifstream shaderStream(shaderFilePath);
+
+	auto path = std::filesystem::path(shaderFilePath);
+
+	std::ifstream shaderStream(path);
 	if (shaderStream.is_open())
 	{
 		std::stringstream sstr;
@@ -48,7 +51,7 @@ void OShaderProgram::attach(const wchar_t* shaderFilePath, const OShaderType& ty
 	}
 	else
 	{
-		OGL3D_WARNING("OShaderProgram | " << shaderFilePath << "not found");
+		OGL3D_WARNING("OShaderProgram | " << shaderFilePath << " not found");
 		return;
 	}
 
@@ -61,6 +64,7 @@ void OShaderProgram::attach(const wchar_t* shaderFilePath, const OShaderType& ty
 	auto sourcePointer = shaderCode.c_str();
 	glShaderSource(shaderId, 1, &sourcePointer, NULL);
 	glCompileShader(shaderId);
+
 
 	//get compile errors
 	i32 logLength = 0;
@@ -93,6 +97,4 @@ void OShaderProgram::link()
 		OGL3D_WARNING("OShaderProgram | " << &errorMessage[0]);
 		return;
 	}
-
 }
-

@@ -1,4 +1,5 @@
 #include <OGL3D/Window/OWindow.h>
+#include <OGL3D/Game/OGame.h>
 #include <glad/glad_wgl.h>
 #include <glad/glad.h>
 #include <Windows.h>
@@ -10,7 +11,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_DESTROY:
 	{
-		OWindow* window = (OWindow *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		OWindow* window = (OWindow*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		break;
 	}
 	case WM_CLOSE:
@@ -18,21 +19,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	}
-
 	default:
 		return DefWindowProc(hwnd, msg, wParam, lParam);
-
 	}
 	return NULL;
 }
 
-OWindow::OWindow() 
+
+OWindow::OWindow()
 {
 	WNDCLASSEX wc = {};
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.lpszClassName = L"OGL3DWindow";
 	wc.lpfnWndProc = &WndProc;
-
+	wc.style = CS_OWNDC;
 
 	auto classId = RegisterClassEx(&wc);
 	assert(classId);
@@ -40,7 +40,8 @@ OWindow::OWindow()
 	RECT rc = { 0,0,1024,768 };
 	AdjustWindowRect(&rc, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU, false);
 
-	m_handle = CreateWindowEx(NULL, L"OGL3DWindow", L"Dennis Kim | OpenGL 3D Game", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, NULL, NULL);
+	m_handle = CreateWindowEx(NULL, MAKEINTATOM(classId), L"PardCode | OpenGL 3D Game", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT,
+		rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, NULL, NULL);
 
 	assert(m_handle);
 
@@ -48,6 +49,7 @@ OWindow::OWindow()
 
 	ShowWindow((HWND)m_handle, SW_SHOW);
 	UpdateWindow((HWND)m_handle);
+
 
 	//Creating OpenGL Render Context
 
@@ -83,14 +85,12 @@ OWindow::OWindow()
 
 	m_context = wglCreateContextAttribsARB(hDC, 0, openGLAttributes);
 	assert(m_context);
-
 }
 
-OWindow::~OWindow() 
+OWindow::~OWindow()
 {
 	wglDeleteContext(HGLRC(m_context));
-	DestroyWindow((HWND)m_handle);
-
+	DestroyWindow(HWND(m_handle));
 }
 
 ORect OWindow::getInnerSize()
@@ -100,7 +100,7 @@ ORect OWindow::getInnerSize()
 	return ORect(rc.right - rc.left, rc.bottom - rc.top);
 }
 
-void OWindow::makeCurrentContact()
+void OWindow::makeCurrentContext()
 {
 	wglMakeCurrent(GetDC(HWND(m_handle)), HGLRC(m_context));
 }

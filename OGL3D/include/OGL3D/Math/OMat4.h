@@ -1,6 +1,5 @@
 #pragma once
 #include <OGL3D/OPrerequisites.h>
-#include <OGL3D/Math/OVec4.h>
 #include <OGL3D/Math/OVec3.h>
 
 class OMat4
@@ -9,12 +8,11 @@ public:
 	OMat4()
 	{
 		setIdentity();
-
 	}
 
 	void setIdentity()
 	{
-		::memset(mat, 0, sizeof(f32) * 16);
+		::memset(mat, 0, sizeof(mat));
 		mat[0][0] = 1;
 		mat[1][1] = 1;
 		mat[2][2] = 1;
@@ -35,12 +33,13 @@ public:
 		mat[3][2] = translation.z;
 	}
 
+
 	void setRotationX(f32 x)
 	{
 		mat[1][1] = cos(x);
 		mat[1][2] = sin(x);
 		mat[2][1] = -sin(x);
-		mat[2][2] = -cos(x);
+		mat[2][2] = cos(x);
 	}
 
 	void setRotationY(f32 y)
@@ -58,11 +57,9 @@ public:
 		mat[1][0] = -sin(z);
 		mat[1][1] = cos(z);
 	}
-
 	void operator *=(const OMat4& matrix)
 	{
 		OMat4 out;
-
 		for (auto i = 0; i < 4; i++)
 		{
 			for (auto j = 0; j < 4; j++)
@@ -76,6 +73,7 @@ public:
 		}
 		*this = out;
 	}
+
 
 	void setOrthoLH(f32 width, f32 height, f32 nearPlane, f32 farPlane)
 	{

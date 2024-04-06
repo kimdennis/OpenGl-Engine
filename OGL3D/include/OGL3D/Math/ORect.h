@@ -3,7 +3,7 @@
 
 class ORect
 {
-public: 
+public:
 	ORect() {}
 	ORect(i32 width, i32 height) :width(width), height(height) {}
 	ORect(i32 left, i32 top, i32 width, i32 height) :left(left), top(top), width(width), height(height) {}

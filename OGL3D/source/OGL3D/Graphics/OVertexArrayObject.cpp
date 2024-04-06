@@ -3,20 +3,16 @@
 
 OVertexArrayObject::OVertexArrayObject(const OVertexBufferDesc& vbDesc)
 {
-
 	if (!vbDesc.listSize) OGL3D_ERROR("OVertexArrayObject | listSize is NULL");
 	if (!vbDesc.vertexSize) OGL3D_ERROR("OVertexArrayObject | vertexSize is NULL");
 	if (!vbDesc.verticesList) OGL3D_ERROR("OVertexArrayObject | verticesList is NULL");
 
-
 	glGenVertexArrays(1, &m_vertexArrayObjectId);
 	glBindVertexArray(m_vertexArrayObjectId);
-	
+
 	glGenBuffers(1, &m_vertexBufferId);
-
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
-	glBufferData(GL_ARRAY_BUFFER, vbDesc.vertexSize*vbDesc.listSize,vbDesc.verticesList,GL_STATIC_DRAW);
-
+	glBufferData(GL_ARRAY_BUFFER, vbDesc.vertexSize * vbDesc.listSize, vbDesc.verticesList, GL_STATIC_DRAW);
 
 	for (ui32 i = 0; i < vbDesc.attributesListSize; i++)
 	{
@@ -26,21 +22,17 @@ OVertexArrayObject::OVertexArrayObject(const OVertexBufferDesc& vbDesc)
 			GL_FLOAT,
 			GL_FALSE,
 			vbDesc.vertexSize,
-			(void*)((i==0)?0: vbDesc.attributesList[i-1].numElements*sizeof(f32))
+			(void*)((i == 0) ? 0 : vbDesc.attributesList[i - 1].numElements * sizeof(f32))
 		);
 		glEnableVertexAttribArray(i);
 	}
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vbDesc.vertexSize, 0);
-	glEnableVertexAttribArray(0);
-
 
 	glBindVertexArray(0);
 
 	m_vertexBufferData = vbDesc;
 }
 
-OVertexArrayObject::OVertexArrayObject(const OVertexBufferDesc& vbDesc, const OIndexBufferDesc& ibDesc):OVertexArrayObject(vbDesc)
+OVertexArrayObject::OVertexArrayObject(const OVertexBufferDesc& vbDesc, const OIndexBufferDesc& ibDesc) :OVertexArrayObject(vbDesc)
 {
 	if (!ibDesc.listSize) OGL3D_ERROR("OVertexArrayObject | listSize is NULL");
 	if (!ibDesc.indicesList) OGL3D_ERROR("OVertexArrayObject | indicesList is NULL");

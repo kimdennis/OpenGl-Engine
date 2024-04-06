@@ -1,6 +1,8 @@
 #pragma once
 #include <OGL3D/Math/ORect.h>
 
+
+
 class OWindow
 {
 public:
@@ -9,7 +11,7 @@ public:
 
 	ORect getInnerSize();
 
-	void makeCurrentContact();
+	void makeCurrentContext();
 	void present(bool vsync);
 private:
 	void* m_handle = nullptr;

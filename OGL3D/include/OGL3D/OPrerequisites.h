@@ -51,28 +51,26 @@ struct OUniformBufferDesc
 	ui32 size = 0;
 };
 
-enum OTriangleType
+enum class OTriangleType
 {
 	TriangleList = 0,
 	TriangleStrip
 };
 
-enum OCullType
+enum class OCullType
 {
 	BackFace = 0,
 	FrontFace,
 	Both
 };
 
-enum OWindingOrder
+enum class OWindingOrder
 {
-	Clockwise = 0,
-	CounterClockwise
+	ClockWise = 0,
+	CounterClockWise
 };
 
-
-
-enum OShaderType
+enum class OShaderType
 {
 	VertexShader = 0,
 	FragmentShader

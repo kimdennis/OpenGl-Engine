@@ -1,7 +1,7 @@
 #include <OGL3D/Graphics/OUniformBuffer.h>
 #include <glad/glad.h>
 
-OUniformBuffer::OUniformBuffer(const OUniformBufferDesc desc)
+OUniformBuffer::OUniformBuffer(const OUniformBufferDesc& desc)
 {
     glGenBuffers(1, &m_id);
     glBindBuffer(GL_UNIFORM_BUFFER, m_id);
