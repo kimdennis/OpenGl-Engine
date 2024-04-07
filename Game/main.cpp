@@ -10,8 +10,9 @@ int main()
 	}
 	catch (const std::exception& e)
 	{
-		std::wclog << e.what() << std::endl;
+		std::cout << e.what() << std::endl;
 		return -1;
 	}
+
 	return 0;
 }

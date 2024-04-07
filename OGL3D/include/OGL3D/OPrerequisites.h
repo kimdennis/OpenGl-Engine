@@ -2,31 +2,30 @@
 #include <memory>
 #include <sstream>
 #include <iostream>
-#include <stdexcept>
+
+typedef float f32;
+typedef unsigned int ui32;
+typedef  int i32;
+
 
 class OVertexArrayObject;
 class OUniformBuffer;
-class OShaderProgram;
+class OShader;
 
-typedef std::shared_ptr<OVertexArrayObject> OVertexArrayObjectPtr;
 typedef std::shared_ptr<OUniformBuffer> OUniformBufferPtr;
-typedef std::shared_ptr<OShaderProgram> OShaderProgramPtr;
+typedef std::shared_ptr<OVertexArrayObject> OVertexArrayObjectPtr;
+typedef std::shared_ptr<OShader> OShaderPtr;
 
-
-
-
-typedef float f32;
-typedef int i32;
-typedef unsigned int ui32;
 
 struct OVertexAttribute
 {
 	ui32 numElements = 0;
 };
 
+
 struct OVertexBufferDesc
 {
-	void* verticesList = nullptr;
+	void* verticesList = 0;
 	ui32 vertexSize = 0;
 	ui32 listSize = 0;
 
@@ -36,14 +35,30 @@ struct OVertexBufferDesc
 
 struct OIndexBufferDesc
 {
-	void* indicesList = nullptr;
+	void* indicesList = 0;
+	//  ui32 indexSize = 0;
 	ui32 listSize = 0;
 };
 
-struct OShaderProgramDesc
+
+enum OTriangleType
 {
-	const wchar_t* vertexShaderFilePath;
-	const wchar_t* fragmentShaderFilePath;
+	TriangleList = 0,
+	TriangleStrip
+};
+
+
+enum OCullType
+{
+	BackFace = 0,
+	FrontFace,
+	Both
+};
+
+enum OWindingOrder
+{
+	ClockWise = 0,
+	CounterClockWise
 };
 
 struct OUniformBufferDesc
@@ -51,31 +66,76 @@ struct OUniformBufferDesc
 	ui32 size = 0;
 };
 
-enum class OTriangleType
+
+struct OShaderDesc
 {
-	TriangleList = 0,
-	TriangleStrip
+	const wchar_t* vertexShaderFile;
+	const wchar_t* fragmentShaderFile;
 };
 
-enum class OCullType
+
+
+enum OKey
 {
-	BackFace = 0,
-	FrontFace,
-	Both
+	KeyEscape = 0,
+	KeyShift,
+	KeyA,
+	KeyB,
+	KeyC,
+	KeyD,
+	KeyE,
+	KeyF,
+	KeyG,
+	KeyH,
+	KeyI,
+	KeyJ,
+	KeyK,
+	KeyL,
+	KeyM,
+	KeyN,
+	KeyO,
+	KeyP,
+	KeyQ,
+	KeyR,
+	KeyS,
+	KeyT,
+	KeyU,
+	KeyV,
+	KeyW,
+	KeyX,
+	KeyY,
+	KeyZ,
+	Key0,
+	Key1,
+	Key2,
+	Key3,
+	Key4,
+	Key5,
+	Key6,
+	Key7,
+	Key8,
+	Key9,
+	KeyF1,
+	KeyF2,
+	KeyF3,
+	KeyF4,
+	KeyF5,
+	KeyF6,
+	KeyF7,
+	KeyF8,
+	KeyF9,
+	KeyF10,
+	KeyF11,
+	KeyF12,
 };
 
-enum class OWindingOrder
-{
-	ClockWise = 0,
-	CounterClockWise
-};
 
-enum class OShaderType
+enum OMouseButton
 {
-	VertexShader = 0,
-	FragmentShader
+	MouseButtonLeft,
+	MouseButtonMiddle,
+	MouseButtonRight
 };
-
 
 #define OGL3D_ERROR(message)\
 {\
@@ -85,8 +145,7 @@ throw std::runtime_error(m.str());\
 }
 
 #define OGL3D_WARNING(message)\
-std::wclog << "OGL3D Warning: " << message << std::endl;
-
+std::wclog << "OGL3D Warning: "  << message << std::endl;
 
 #define OGL3D_INFO(message)\
-std::wclog << "OGL3D Info: " << message << std::endl;
+std::wclog << "OGL3D Info: "  << message << std::endl;

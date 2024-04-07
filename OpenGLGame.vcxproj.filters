@@ -33,22 +33,16 @@
     <ClCompile Include="OGL3D\vendor\glad\src\glad_wgl.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OGL3D\source\OGL3D\Game\CWin32Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OGL3D\source\OGL3D\Graphics\Win32\CWin32GraphicsEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OGL3D\source\OGL3D\Graphics\OVertexArrayObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OGL3D\source\OGL3D\Graphics\OShaderProgram.cpp">
+    <ClCompile Include="OGL3D\source\OGL3D\Graphics\OShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OGL3D\source\OGL3D\Graphics\OUniformBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OGL3D\source\OGL3D\Entity\OEntitySystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OGL3D\source\OGL3D\Entity\OEntity.cpp">
@@ -57,7 +51,19 @@
     <ClCompile Include="Game\MyGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\MyPlayer.cpp">
+    <ClCompile Include="OGL3D\source\OGL3D\Camera\OCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OGL3D\source\OGL3D\Entity\OCubeEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OGL3D\source\OGL3D\Entity\OGraphicsEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OGL3D\source\OGL3D\Input\CWin32InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OGL3D\source\OGL3D\Game\Win32\CWin32Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,7 +89,7 @@
     <ClInclude Include="OGL3D\include\OGL3D\Graphics\OVertexArrayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OGL3D\include\OGL3D\Graphics\OShaderProgram.h">
+    <ClInclude Include="OGL3D\include\OGL3D\Graphics\OShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OGL3D\include\OGL3D\Graphics\OUniformBuffer.h">
@@ -98,9 +104,6 @@
     <ClInclude Include="OGL3D\include\OGL3D\Math\OVec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OGL3D\include\OGL3D\Entity\OEntitySystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="OGL3D\include\OGL3D\Entity\OEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -110,12 +113,21 @@
     <ClInclude Include="OGL3D\include\OGL3D\All.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\MyPlayer.h">
+    <ClInclude Include="OGL3D\include\OGL3D\Camera\OCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OGL3D\include\OGL3D\Entity\OCubeEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OGL3D\include\OGL3D\Entity\OGraphicsEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OGL3D\include\OGL3D\Input\OInputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Shaders\BasicShader.vert" />
-    <None Include="Assets\Shaders\BasicShader.frag" />
+    <None Include="Assets\Shaders\Shader.vert" />
+    <None Include="Assets\Shaders\Shader.frag" />
   </ItemGroup>
 </Project>

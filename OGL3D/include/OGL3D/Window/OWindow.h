@@ -13,7 +13,9 @@ public:
 
 	void makeCurrentContext();
 	void present(bool vsync);
+
 private:
 	void* m_handle = nullptr;
 	void* m_context = nullptr;
+	ORect m_size = ORect(1024, 768);
 };

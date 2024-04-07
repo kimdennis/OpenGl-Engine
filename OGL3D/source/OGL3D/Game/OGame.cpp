@@ -1,38 +1,49 @@
 #include <OGL3D/Game/OGame.h>
 #include <OGL3D/Window/OWindow.h>
-#include <OGL3D/Graphics/OVertexArrayObject.h>
-#include <OGL3D/Graphics/OShaderProgram.h>
-#include <OGL3D/Graphics/OUniformBuffer.h>
-#include <OGL3D/Graphics/OGraphicsEngine.h>
 #include <OGL3D/Math/OMat4.h>
-#include <OGL3D/Math/OVec3.h>
 #include <OGL3D/Math/OVec2.h>
-#include <OGL3D/Entity/OEntitySystem.h>
-
+#include <OGL3D/Camera/OCamera.h>
+#include <OGL3D/Entity/OGraphicsEntity.h>
+#include <math.h>
 
 struct UniformData
 {
-	OMat4 world;
-	OMat4 projection;
+    OMat4 world;
+    OMat4 view;
+    OMat4 proj;
 };
 
-struct Vertex
-{
-	OVec3 position;
-	OVec2 texcoord;
-};
 
 
 OGame::OGame()
 {
-	m_graphicsEngine = std::make_unique<OGraphicsEngine>();
-	m_display = std::make_unique<OWindow>();
-	m_entitySystem = std::make_unique<OEntitySystem>();
+    m_inputManager = std::make_unique<OInputManager>();
+    m_graphicsEngine = std::make_unique<OGraphicsEngine>();
+    m_display = std::make_unique<OWindow>();
 
-	m_display->makeCurrentContext();
 
-	m_graphicsEngine->setViewport(m_display->getInnerSize());
+    m_display->makeCurrentContext();
+
+    m_graphicsEngine->setViewport(m_display->getInnerSize());
+    m_graphicsEngine->setFaceCulling(BackFace); // draw only the front faces, the back faces are discarded
+    m_graphicsEngine->setWindingOrder(ClockWise); //consider the position of vertices in clock wise way.
+
+    getInputManager()->setScreenArea(m_display->getInnerSize());
+
+
+    m_uniform = m_graphicsEngine->createUniformBuffer({
+        sizeof(UniformData) // size in bytes of the data structure we want to pass to shaders
+        });
+
+
+    m_shader = m_graphicsEngine->createShader(
+        {
+            L"Assets/Shaders/Shader.vert",
+            L"Assets/Shaders/Shader.frag"
+        });
 }
+
+
 
 OGame::~OGame()
 {
@@ -40,212 +51,56 @@ OGame::~OGame()
 
 void OGame::onCreate()
 {
-	OVec3 positionsList[] =
-	{
-		//front face
-		OVec3(-0.5f,-0.5f,-0.5f),
-		OVec3(-0.5f,0.5f,-0.5f),
-		OVec3(0.5f,0.5f,-0.5f),
-		OVec3(0.5f,-0.5f,-0.5f),
-
-		//back face
-		OVec3(0.5f,-0.5f,0.5f),
-		OVec3(0.5f,0.5f,0.5f),
-		OVec3(-0.5f,0.5f,0.5f),
-		OVec3(-0.5f,-0.5f,0.5f)
-	};
-
-
-	OVec2 texcoordsList[] =
-	{
-		OVec2(0,0),
-		OVec2(0,1),
-		OVec2(1,0),
-		OVec2(1,1)
-	};
-
-
-	Vertex verticesList[] =
-	{
-		//front face
-		{ positionsList[0],texcoordsList[1] },
-		{ positionsList[1],texcoordsList[0] },
-		{ positionsList[2],texcoordsList[2] },
-		{ positionsList[3],texcoordsList[3] },
-
-		//back face
-		{ positionsList[4],texcoordsList[1] },
-		{ positionsList[5],texcoordsList[0] },
-		{ positionsList[6],texcoordsList[2] },
-		{ positionsList[7],texcoordsList[3] },
-
-		//top face
-		{ positionsList[1],texcoordsList[1] },
-		{ positionsList[6],texcoordsList[0] },
-		{ positionsList[5],texcoordsList[2] },
-		{ positionsList[2],texcoordsList[3] },
-
-		//bottom face
-		{ positionsList[7],texcoordsList[1] },
-		{ positionsList[0],texcoordsList[0] },
-		{ positionsList[3],texcoordsList[2] },
-		{ positionsList[4],texcoordsList[3] },
-
-		//right face
-		{ positionsList[3],texcoordsList[1] },
-		{ positionsList[2],texcoordsList[0] },
-		{ positionsList[5],texcoordsList[2] },
-		{ positionsList[4],texcoordsList[3] },
-
-		//left face
-		{ positionsList[7],texcoordsList[1] },
-		{ positionsList[6],texcoordsList[0] },
-		{ positionsList[1],texcoordsList[2] },
-		{ positionsList[0],texcoordsList[3] }
-	};
-
-
-
-	ui32 indicesList[] =
-	{
-		//front
-		0,1,2,
-		2,3,0,
-
-		//back
-		4,5,6,
-		6,7,4,
-
-		//top
-		8,9,10,
-		10,11,8,
-
-		//bottom
-		12,13,14,
-		14,15,12,
-
-		//right
-		16,17,18,
-		18,19,16,
-
-		//left
-		20,21,22,
-		22,23,20
-	};
-
-
-	OVertexAttribute attribsList[] = {
-		sizeof(OVec3) / sizeof(f32), //position
-		sizeof(OVec2) / sizeof(f32) //texcoord
-	};
-
-
-	m_polygonVAO = m_graphicsEngine->createVertexArrayObject(
-		{
-			(void*)verticesList,
-			sizeof(Vertex),
-			sizeof(verticesList) / sizeof(Vertex),
-
-			attribsList,
-			sizeof(attribsList) / sizeof(OVertexAttribute)
-		},
-
-		{
-			(void*)indicesList,
-			sizeof(indicesList)
-		}
-		);
-
-
-	m_uniform = m_graphicsEngine->createUniformBuffer({
-		sizeof(UniformData)
-		});
-
-	m_shader = m_graphicsEngine->createShaderProgram(
-		{
-			L"Assets/Shaders/BasicShader.vert",
-			L"Assets/Shaders/BasicShader.frag"
-		});
-
-	m_shader->setUniformBufferSlot("UniformData", 0);
 }
 
+void OGame::onUpdate(f32 deltaTime)
+{
+}
 
 void OGame::onUpdateInternal()
 {
-	//computing delta time
-	auto currentTime = std::chrono::system_clock::now();
-	auto elapsedSeconds = std::chrono::duration<double>();
-	if (m_previousTime.time_since_epoch().count())
-		elapsedSeconds = currentTime - m_previousTime;
-	m_previousTime = currentTime;
+    m_inputManager->update();
+
+    //computing delta time-------------------
+    auto now = std::chrono::system_clock::now(); // take the current time
+    std::chrono::duration<double> elapsedSeconds = now - m_oldTime; // let's take the difference between the current time and the time taken in the previous frame in seconds (the so called delta time)
+    if (!m_oldTime.time_since_epoch().count()) //if m_oldTime has not been set yet, simply set elapsedSeconds to 0
+        elapsedSeconds = std::chrono::duration<double>();
+    m_oldTime = now; // store the current time in order to be used in the next frame
+
+    f32 deltaTime = (f32)elapsedSeconds.count();
+    //---------------------------------------------
+
+    //destroy the entities that have been release in the previous iteration
+    // we destroy the entities here in order to not create issues during the loop over the main map (m_entities)
+    //--------------------------------
+    for (auto entity : m_entitiesToDestroy)
+    {
+        auto id = typeid(entity).hash_code();
+        m_entities[id].erase(entity);
+    }
+    m_entitiesToDestroy.clear();
+    //----------------------------------
 
 
-	auto deltaTime = (f32)elapsedSeconds.count();
+    //update game and entities
+    //----------------------------------
+    onUpdate(deltaTime);
 
+    for (auto& [key, entities] : m_entities)
+    {
+        for (auto& [key, entity] : entities)
+        {
+            entity->onUpdate(deltaTime);
+        }
+    }
+    //----------------------------------
 
-
-
-	onUpdate(deltaTime);
-	m_entitySystem->update(deltaTime);
-
-
-
-
-
-	m_scale += 1.14f * deltaTime;
-	auto currentScale = abs(sin(m_scale));
-
-
-	OMat4 world, projection, temp;
-
-	temp.setIdentity();
-	temp.setScale(OVec3(1, 1, 1));
-	world *= temp;
-
-	temp.setIdentity();
-	temp.setRotationZ(m_scale);
-	world *= temp;
-
-	temp.setIdentity();
-	temp.setRotationY(m_scale);
-	world *= temp;
-
-	temp.setIdentity();
-	temp.setRotationX(m_scale);
-	world *= temp;
-
-	temp.setIdentity();
-	temp.setTranslation(OVec3(0, 0, 0));
-	world *= temp;
+    //update the graphics part
+    onGraphicsUpdate(deltaTime);
 
 
 
-	auto displaySize = m_display->getInnerSize();
-	projection.setOrthoLH(displaySize.width * 0.004f, displaySize.height * 0.004f, 0.01f, 100.0f);
-
-
-
-
-
-
-
-	UniformData data = { world , projection };
-	m_uniform->setData(&data);
-
-
-
-
-	m_graphicsEngine->clear(OVec4(0, 0, 0, 1));
-
-	m_graphicsEngine->setFaceCulling(OCullType::BackFace);
-	m_graphicsEngine->setWindingOrder(OWindingOrder::ClockWise);
-	m_graphicsEngine->setVertexArrayObject(m_polygonVAO);
-	m_graphicsEngine->setUniformBuffer(m_uniform, 0);
-	m_graphicsEngine->setShaderProgram(m_shader);
-	m_graphicsEngine->drawIndexedTriangles(OTriangleType::TriangleList, 36);
-
-	m_display->present(false);
 }
 
 void OGame::onQuit()
@@ -255,10 +110,91 @@ void OGame::onQuit()
 
 void OGame::quit()
 {
-	m_isRunning = false;
+    m_isRunning = false;
 }
 
-OEntitySystem* OGame::getEntitySystem()
+void OGame::onGraphicsUpdate(f32 deltaTime)
 {
-	return m_entitySystem.get();
+    m_graphicsEngine->clear(OVec4(0, 0, 0, 1));
+
+    UniformData data = {};
+
+
+
+    auto camId = typeid(OCamera).hash_code();
+    auto it = m_entities.find(camId);
+
+
+    //let's set the camera data to the uniformdata structure, in order to pass them to the shaders for the final rendering
+    if (it != m_entities.end())
+    {
+        for (auto& [key, camera] : it->second)
+        {
+            //the camera data are the view and projection
+            //view is simply the world matrix of the camera inverted
+            OMat4 w;
+            auto cam = dynamic_cast<OCamera*>(camera.get());
+            cam->getViewMatrix(data.view);
+            cam->setScreenArea(this->m_display->getInnerSize());
+            cam->getProjectionMatrix(data.proj);
+        }
+    }
+
+    for (auto& [key, entities] : m_entities)
+    {
+        //for each graphics entity
+        for (auto& [key, entity] : entities)
+        {
+            auto e = dynamic_cast<OGraphicsEntity*>(entity.get());
+
+            if (e)
+            {
+                //let's retrive the world matrix and let's pass it to the uniform buffer
+                e->getWorldMatrix(data.world);
+
+                m_uniform->setData(&data);
+                m_graphicsEngine->setShader(m_shader); //bind shaders to graphics pipeline
+                m_graphicsEngine->setUniformBuffer(m_uniform, 0); // bind uniform buffer
+
+                //call internal graphcis update of the entity in order to handle specific graphics data/functions 
+                e->onGraphicsUpdate(deltaTime);
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+    m_display->present(false);
+}
+
+void OGame::createEntityConcrete(OEntity* entity, size_t id)
+{
+    auto entityPtr = std::unique_ptr<OEntity>(entity);
+    auto camId = typeid(OCamera).hash_code();
+    entity->m_game = this;
+    if (id == camId)
+    {
+        auto it = m_entities.find(camId);
+        if (it != m_entities.end())
+        {
+            if (it->second.size()) return;
+            it->second.emplace(entity, std::move(entityPtr));
+        }
+        else
+        {
+            m_entities[camId].emplace(entity, std::move(entityPtr));
+        }
+    }
+    else
+    {
+        m_entities[id].emplace(entity, std::move(entityPtr));
+    }
+    entity->onCreate();
+}
+
+void OGame::removeEntity(OEntity* entity)
+{
+    m_entitiesToDestroy.emplace(entity);
 }
