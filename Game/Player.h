@@ -17,5 +17,5 @@ private:
 	f32 m_camRotY = 0;
 
 	OCamera* m_cam = nullptr;
+	//f32 m_roty = 0;
 };
-

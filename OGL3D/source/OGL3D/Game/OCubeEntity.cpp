@@ -133,8 +133,12 @@ void OCubeEntity::setTexture(const OTexturePtr& texture)
 
 void OCubeEntity::onGraphicsUpdate(f32 deltaTime)
 {
-    m_game->getGraphicsEngine()->setTexture2D(m_texture->getTexture2D(), 0);
+    auto engine = m_game->getGraphicsEngine();
+    engine->setFaceCulling(OCullType::BackFace); // draw only the front faces, the back faces are discarded
+    engine->setWindingOrder(OWindingOrder::ClockWise); //consider the position of vertices in clock wise way.
+
+    engine->setTexture2D(m_texture->getTexture2D(), 0);
     //during the graphcis update, we call the draw function
-    m_game->getGraphicsEngine()->setVertexArrayObject(m_mesh); //bind vertex buffer to graphics pipeline
-    m_game->getGraphicsEngine()->drawIndexedTriangles(OTriangleType::TriangleList, 36);//draw triangles through the usage of index buffer
+    engine->setVertexArrayObject(m_mesh); //bind vertex buffer to graphics pipeline
+    engine->drawIndexedTriangles(OTriangleType::TriangleList, 36);//draw triangles through the usage of index buffer
 }

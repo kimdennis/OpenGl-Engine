@@ -4,6 +4,7 @@
 #include <OGL3D/Input/OInputManager.h>
 #include <OGL3D/Resource/OResourceManager.h>
 #include <OGL3D/Game/OEntity.h>
+#include <OGL3D/Game/OMeshEntity.h>
 #include <chrono>
 #include <map>
 #include <set>
@@ -49,20 +50,29 @@ private:
 	void onGraphicsUpdate(f32 deltaTime);
 
 
-	void createEntityConcrete(OEntity* entity,size_t id);
+	void createEntityConcrete(OEntity* entity, size_t id);
 	void removeEntity(OEntity* entity);
 	//---------------------------------------------------------
+
+private:
+	//various internal methods of graphics system------------
+
+	void drawMesh(OMeshEntity* entity);
+
+
+
+
 protected:
-	bool m_isRunning = true;	
-	
+	bool m_isRunning = true;
 
 
-    //take care of the order of smart pointers
-    //the first one defined (m_display) is the last to be deallocated
-    //the last one defined (m_triShader) is the first to be deallocated
+
+	//take care of the order of smart pointers
+	//the first one defined (m_display) is the last to be deallocated
+	//the last one defined (m_triShader) is the first to be deallocated
 	std::unique_ptr<OInputManager> m_inputManager;
-    std::unique_ptr<OGraphicsEngine> m_graphicsEngine;
-	std::unique_ptr<OWindow> m_display;	
+	std::unique_ptr<OGraphicsEngine> m_graphicsEngine;
+	std::unique_ptr<OWindow> m_display;
 	std::unique_ptr<OResourceManager> m_resourceManager;
 
 	//the core of entity system--------------
@@ -79,10 +89,10 @@ protected:
 
 
 	OUniformBufferPtr m_uniform;
-    OShaderPtr m_shader;
+	OShaderPtr m_shader;
+	OShaderPtr m_meshShader;
 
 	std::chrono::system_clock::time_point m_oldTime;
 
 	friend class OEntity;
 };
-

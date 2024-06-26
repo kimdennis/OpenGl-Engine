@@ -17,7 +17,7 @@ public:
 
 private:
 
-	OCubeEntity* m_player = nullptr;
+	OEntity* m_player = nullptr;
 
 };
 

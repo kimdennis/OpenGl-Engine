@@ -7,7 +7,7 @@ class OResourceManager;
 class OResource
 {
 public:
-	OResource(const wchar_t* path,OResourceManager* manager);
+	OResource(const wchar_t* path, OResourceManager* manager);
 	virtual ~OResource();
 
 	std::wstring getPath();

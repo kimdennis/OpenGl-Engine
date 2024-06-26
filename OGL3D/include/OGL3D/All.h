@@ -15,20 +15,10 @@
 #include <OGL3D/Resource/OResourceManager.h>
 #include <OGL3D/Resource/OResource.h>
 #include <OGL3D/Resource/OTexture.h>
-
+#include <OGL3D/Resource/OMesh.h>
 
 #include <OGL3D/Game/OCamera.h>
 #include <OGL3D/Game/OCubeEntity.h>
 #include <OGL3D/Game/OEntity.h>
 #include <OGL3D/Game/OGame.h>
 #include <OGL3D/Game/OGraphicsEntity.h>
-
-
-
-
-
-
-
-
-
-

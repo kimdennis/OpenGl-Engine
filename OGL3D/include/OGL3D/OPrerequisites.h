@@ -8,7 +8,6 @@ typedef float f32;
 typedef unsigned int ui32;
 typedef  int i32;
 
-
 class OVertexArrayObject;
 class OUniformBuffer;
 class OShader;
@@ -17,16 +16,16 @@ class OTexture2D;
 class OResourceManager;
 class OResource;
 class OTexture;
+class OMesh;
 
 typedef std::shared_ptr<OUniformBuffer> OUniformBufferPtr;
 typedef std::shared_ptr<OVertexArrayObject> OVertexArrayObjectPtr;
 typedef std::shared_ptr<OShader> OShaderPtr;
 typedef std::shared_ptr<OTexture2D> OTexture2DPtr;
 
-
 typedef std::shared_ptr<OResource> OResourcePtr;
 typedef std::shared_ptr<OTexture> OTexturePtr;
-
+typedef std::shared_ptr<OMesh> OMeshPtr;
 
 struct OVertexAttribute
 {
@@ -68,9 +67,10 @@ enum class OTriangleType
 
 enum class OCullType
 {
-    BackFace = 0,
-    FrontFace,
-    Both
+	BackFace = 0,
+	FrontFace,
+	Both,
+	None
 };
 
 enum class OWindingOrder

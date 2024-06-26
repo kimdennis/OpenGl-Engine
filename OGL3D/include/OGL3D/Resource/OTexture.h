@@ -4,7 +4,7 @@
 #include <OGL3D/OPrerequisites.h>
 #include <OGL3D/Resource/OResource.h>
 
-class OTexture: public OResource
+class OTexture : public OResource
 {
 public:
 	OTexture(const wchar_t* path, OResourceManager* manager);

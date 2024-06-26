@@ -4,6 +4,8 @@
 #include <OGL3D/Math/OVec2.h>
 #include <OGL3D/Game/OCamera.h>
 #include <OGL3D/Game/OGraphicsEntity.h>
+#include <OGL3D/Resource/OMesh.h>
+#include <OGL3D/Resource/OTexture.h>
 #include <math.h>
 
 struct UniformData
@@ -18,16 +20,14 @@ struct UniformData
 OGame::OGame()
 {
     m_inputManager = std::make_unique<OInputManager>();
-	m_graphicsEngine = std::make_unique<OGraphicsEngine>();
-	m_display = std::make_unique<OWindow>();
+    m_graphicsEngine = std::make_unique<OGraphicsEngine>();
+    m_display = std::make_unique<OWindow>();
     m_resourceManager = std::make_unique<OResourceManager>(this);
 
 
-	m_display->makeCurrentContext();
+    m_display->makeCurrentContext();
 
-	m_graphicsEngine->setViewport(m_display->getInnerSize());
-    m_graphicsEngine->setFaceCulling(OCullType::BackFace); // draw only the front faces, the back faces are discarded
-    m_graphicsEngine->setWindingOrder(OWindingOrder::ClockWise); //consider the position of vertices in clock wise way.
+    m_graphicsEngine->setViewport(m_display->getInnerSize());
 
     getInputManager()->setScreenArea(m_display->getInnerSize());
 
@@ -41,6 +41,13 @@ OGame::OGame()
         {
             L"Assets/Shaders/Shader.vert",
             L"Assets/Shaders/Shader.frag"
+        });
+
+
+    m_meshShader = m_graphicsEngine->createShader(
+        {
+            L"Assets/Shaders/MeshShader.vert",
+            L"Assets/Shaders/MeshShader.frag"
         });
 }
 
@@ -101,7 +108,7 @@ void OGame::onUpdateInternal()
     onGraphicsUpdate(deltaTime);
 
 
-   
+
 }
 
 void OGame::onQuit()
@@ -111,13 +118,13 @@ void OGame::onQuit()
 
 void OGame::quit()
 {
-	m_isRunning = false;
+    m_isRunning = false;
 }
 
 void OGame::onGraphicsUpdate(f32 deltaTime)
 {
     m_graphicsEngine->clear(OVec4(0, 0, 0, 1));
-   
+
     UniformData data = {};
 
 
@@ -146,9 +153,9 @@ void OGame::onGraphicsUpdate(f32 deltaTime)
         //for each graphics entity
         for (auto& [key, entity] : entities)
         {
-            auto e = dynamic_cast<OGraphicsEntity*>(entity.get());
+            //auto e = dynamic_cast<OGraphicsEntity*>(entity.get());
 
-            if (e)
+            if (auto e = dynamic_cast<OGraphicsEntity*>(entity.get()))
             {
                 //let's retrive the world matrix and let's pass it to the uniform buffer
                 e->getWorldMatrix(data.world);
@@ -159,6 +166,17 @@ void OGame::onGraphicsUpdate(f32 deltaTime)
 
                 //call internal graphcis update of the entity in order to handle specific graphics data/functions 
                 e->onGraphicsUpdate(deltaTime);
+            }
+            else if (auto e = dynamic_cast<OMeshEntity*>(entity.get()))
+            {
+                //let's retrive the world matrix and let's pass it to the uniform buffer
+                e->getWorldMatrix(data.world);
+
+                m_uniform->setData(&data);
+                m_graphicsEngine->setShader(m_meshShader); //bind shaders to graphics pipeline
+                m_graphicsEngine->setUniformBuffer(m_uniform, 0); // bind uniform buffer
+
+                drawMesh(e);
             }
             else
             {
@@ -171,7 +189,7 @@ void OGame::onGraphicsUpdate(f32 deltaTime)
 }
 
 void OGame::createEntityConcrete(OEntity* entity, size_t id)
-{   
+{
     auto entityPtr = std::unique_ptr<OEntity>(entity);
     auto camId = typeid(OCamera).hash_code();
     entity->m_game = this;
@@ -198,4 +216,19 @@ void OGame::createEntityConcrete(OEntity* entity, size_t id)
 void OGame::removeEntity(OEntity* entity)
 {
     m_entitiesToDestroy.emplace(entity);
+}
+
+void OGame::drawMesh(OMeshEntity* entity)
+{
+    if (!entity) return;
+
+    m_graphicsEngine->setFaceCulling(OCullType::None); // draw only the front faces, the back faces are discarded
+    m_graphicsEngine->setWindingOrder(OWindingOrder::CounterClockWise); //consider the position of vertices in clock wise way.
+
+    if (entity->getTexture())
+        m_graphicsEngine->setTexture2D(entity->getTexture()->getTexture2D(), 0);
+
+    //during the graphcis update, we call the draw function
+    m_graphicsEngine->setVertexArrayObject(entity->getMesh()->getVertexArrayObject()); //bind vertex buffer to graphics pipeline
+    m_graphicsEngine->drawIndexedTriangles(OTriangleType::TriangleList, entity->getMesh()->getVertexArrayObject()->getNumIndices());//draw triangles through the usage of index buffer
 }

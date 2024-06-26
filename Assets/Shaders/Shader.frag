@@ -6,7 +6,7 @@ layout(location = 1) in vec2 texCoord;
 layout(location = 0) out vec4 color;
 
 
-uniform sampler2D texture1;
+uniform sampler2D tex;
 
 
 
@@ -21,7 +21,7 @@ void main(){
        color = vec4(0,0.5,1,1);
        
        
-  vec4 texColor = texture(texture1, texCoord);
+  vec4 texColor = texture(tex, texCoord);
 
   //color.a =1;
   //color.rgb*=0.99;

@@ -7,7 +7,7 @@
 #include <stb_image.h>
 
 
-OTexture::OTexture(const wchar_t* path, OResourceManager* manager):OResource(path, manager)
+OTexture::OTexture(const wchar_t* path, OResourceManager* manager) :OResource(path, manager)
 {
 	ORect textureSize;
 	auto nrChannels = 0;
@@ -15,8 +15,8 @@ OTexture::OTexture(const wchar_t* path, OResourceManager* manager):OResource(pat
 	std::filesystem::path resPath = path;
 	auto str = resPath.generic_string();
 
-	unsigned char* data =  stbi_load(str.c_str(), &textureSize.width, &textureSize.height, &nrChannels, 0);
-	
+	unsigned char* data = stbi_load(str.c_str(), &textureSize.width, &textureSize.height, &nrChannels, 0);
+
 	if (data)
 	{
 		m_texture2D = manager->getGame()->getGraphicsEngine()->createTexture2D({ data,textureSize, (ui32)nrChannels });

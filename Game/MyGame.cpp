@@ -15,17 +15,29 @@ void MyGame::onCreate()
 {
 	//loading texture resource
 	auto dog = std::dynamic_pointer_cast<OTexture>(getResourceManager()->createResourceFromFile(L"Assets/Textures/cutie_patootie_doggy.jpg"));
+	auto teapot = std::dynamic_pointer_cast<OMesh>(getResourceManager()->createResourceFromFile(L"Assets/Meshes/teapot.obj"));
 
 	//creating the floor
-	auto cube = createEntity<OCubeEntity>();
-	cube->setScale(OVec3(6.8f, 0.1f, 6.8f));
-	cube->setPosition(OVec3(0, -1, 0));
-	cube->setTexture(dog);
+	{
+		auto entity = createEntity<OCubeEntity>();
+		entity->setScale(OVec3(10.0f, 0.1f, 10.0f));
+		entity->setPosition(OVec3(0, 0, 0));
+		entity->setTexture(dog);
+	}
 
 
-	srand((unsigned int)time(NULL));
+	//creating teapot
+	{
+		auto entity = createEntity<OMeshEntity>();
+		entity->setScale(OVec3(1, 1, 1));
+		entity->setPosition(OVec3(0, 0, 0));
+		entity->setTexture(dog);
+		entity->setMesh(teapot);
+	}
 
 	/*
+	srand((unsigned int)time(NULL));
+
 	for (auto y = -2; y < 3; y++)
 	{
 		for (auto x = -2; x < 3; x++)
@@ -46,13 +58,15 @@ void MyGame::onCreate()
 
 	//creating the player
 	//all the input managements, creation of camera etc. are moved inside Player class
-	auto player = createEntity<Player>();
-	player->setPosition(OVec3(0, 0, 0));
-
+	m_player = createEntity<Player>();
+	
 	//enabling play mode
 	getInputManager()->enablePlayMode(true);
 }
 
 void MyGame::onUpdate(f32 deltaTime)
-{
+{  
+
+
+
 }
