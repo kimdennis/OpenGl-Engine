@@ -14,15 +14,19 @@ bool OInputManager::isKeyDown(OKey key)
 	short keyWin = 0;
 
 	if (key >= KeyA && key <= KeyZ)
-		keyWin = 'A' + (key - 2);
+		keyWin = 'A' + (key - KeyA);
 	else if (key >= Key0 && key <= Key9)
-		keyWin = '0' + (key - 28);
+		keyWin = '0' + (key - Key0);
 	else if (key == KeyShift)
 		keyWin = VK_SHIFT;
 	else if (key == KeyEscape)
 		keyWin = VK_ESCAPE;
+	else if (key == KeySpace)
+		keyWin = VK_SPACE;
+	else if (key == KeyCtrl)
+		keyWin = VK_CONTROL;
 
-	return  (m_keys_state_res[keyWin] == 0);
+	return (m_keys_state_res[keyWin] == 0);
 }
 
 bool OInputManager::isKeyUp(OKey key)
@@ -30,15 +34,19 @@ bool OInputManager::isKeyUp(OKey key)
 	short keyWin = 0;
 
 	if (key >= KeyA && key <= KeyZ)
-		keyWin = 'A' + (key - 2);
+		keyWin = 'A' + (key - KeyA);
 	else if (key >= Key0 && key <= Key9)
-		keyWin = '0' + (key - 28);
+		keyWin = '0' + (key - Key0);
 	else if (key == KeyShift)
 		keyWin = VK_SHIFT;
 	else if (key == KeyEscape)
 		keyWin = VK_ESCAPE;
+	else if (key == KeySpace)
+		keyWin = VK_SPACE;
+	else if (key == KeyCtrl)
+		keyWin = VK_CONTROL;
 
-	return  (m_keys_state_res[keyWin] == 1);
+	return (m_keys_state_res[keyWin] == 1);
 }
 
 bool OInputManager::isMouseDown(OMouseButton button)

@@ -37,12 +37,16 @@ void Player::onUpdate(f32 deltaTime)
 
 	auto forwardDir = worldMatCam.getForwardDirection();
 	auto rightwardDir = worldMatCam.getRightwardDirection();
-
+	auto upDir = worldMatCam.getUpDirection();
 
 
 	auto speed = 2.0f;
-	f32 moveForward = 0, moveRightward = 0;
-
+	f32 moveForward = 0, moveRightward = 0, moveUpward = 0;
+	if (input->isKeyDown(OKey::KeyShift))
+	{
+		//Press shift to run!
+		speed *= 2.0f;
+	}
 	if (input->isKeyDown(OKey::KeyW))
 	{
 		moveForward = 1;
@@ -59,9 +63,18 @@ void Player::onUpdate(f32 deltaTime)
 	{
 		moveRightward = 1;
 	}
+	if (input->isKeyDown(OKey::KeySpace))
+	{
+		moveUpward = 1;
+	}
+	if (input->isKeyDown(OKey::KeyCtrl))
+	{
+		moveUpward = -1;
+	}
 
 	auto pos = m_cam->getPosition() + (forwardDir * moveForward) * speed * deltaTime;
 	pos = pos + (rightwardDir * moveRightward) * speed * deltaTime;
+	pos = pos + (upDir * moveUpward) * speed * deltaTime;
 
 	m_cam->setPosition(pos);
 }

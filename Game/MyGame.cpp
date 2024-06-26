@@ -14,18 +14,18 @@ MyGame::~MyGame()
 void MyGame::onCreate()
 {
 	//loading texture resource
-	auto wood = std::dynamic_pointer_cast<OTexture>(getResourceManager()->createResourceFromFile(L"Assets/Textures/cutie_patootie_doggy.jpg"));
-	auto wall = std::dynamic_pointer_cast<OTexture>(getResourceManager()->createResourceFromFile(L"Assets/Textures/cutie_patootie_doggy.jpg"));
+	auto dog = std::dynamic_pointer_cast<OTexture>(getResourceManager()->createResourceFromFile(L"Assets/Textures/cutie_patootie_doggy.jpg"));
 
 	//creating the floor
 	auto cube = createEntity<OCubeEntity>();
 	cube->setScale(OVec3(6.8f, 0.1f, 6.8f));
 	cube->setPosition(OVec3(0, -1, 0));
-	cube->setTexture(wall);
+	cube->setTexture(dog);
 
 
 	srand((unsigned int)time(NULL));
 
+	/*
 	for (auto y = -2; y < 3; y++)
 	{
 		for (auto x = -2; x < 3; x++)
@@ -39,9 +39,10 @@ void MyGame::onCreate()
 			cube->setScale(OVec3(width, height, width));
 			cube->setPosition(OVec3(x * 1.4f, (height / 2.0f) - 0.94f, y * 1.4f));
 			cube->setRotation(OVec3(0, roty, 0));
-			cube->setTexture(wood);
+			cube->setTexture(dog);
 		}
 	}
+	*/
 
 	//creating the player
 	//all the input managements, creation of camera etc. are moved inside Player class

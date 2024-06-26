@@ -104,6 +104,8 @@ enum OKey
 {
 	KeyEscape = 0,
 	KeyShift,
+	KeyCtrl,
+	KeySpace,
 	KeyA,
 	KeyB,
 	KeyC,
