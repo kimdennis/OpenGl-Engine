@@ -6,9 +6,6 @@ An OpenGL-based 3D engine built for Win32, supporting features like Vertex Array
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Dependencies](#dependencies)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
